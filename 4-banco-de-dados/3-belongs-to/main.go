@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -57,14 +59,23 @@ func main() {
 
 	// Aula de BelongsTo -> chaves estrangeiras
 	// create category
-	category := Category{Name: "Eletrônicos"}
-	db.Create(&category)
+	// category := Category{Name: "Eletrônicos"}
+	// db.Create(&category)
 
-	// create product
-	db.Create(&Product{
-		Name:       "Mouse",
-		Price:      40,
-		CategoryID: category.ID,
-	})
+	// // create product
+	// db.Create(&Product{
+	// 	Name:       "Mouse",
+	// 	Price:      40,
+	// 	CategoryID: category.ID,
+	// })
+
+	// Trazendo produtos da categoria
+	// Fazemos o preload, porque assim o gorm faz o preenchimento dessa categoria na struct de products
+	var products []Product
+	db.Preload("Category").Find(&products)
+	for _, product := range products {
+		fmt.Println("Produto-----------ID Categoria\n")
+		fmt.Println(product.Name, product.Category.ID)
+	}
 
 }
